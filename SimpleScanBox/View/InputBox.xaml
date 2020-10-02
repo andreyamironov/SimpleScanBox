@@ -1,0 +1,54 @@
+﻿<Window x:Class="SimpleScanBox.View.InputBox"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SimpleScanBox.View"
+        mc:Ignorable="d" Background="AliceBlue" Loaded="Window_Loaded"
+        Title="InputBox" Height="240" Width="480" WindowStartupLocation="CenterScreen" Icon="/SimpleScanBox;component/Icons/SsCc.ico" ResizeMode="NoResize" WindowStyle="None">
+    <Window.Resources>
+        <Style x:Key="Input" TargetType="TextBox">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TextBox}">
+                        <Border
+                        x:Name="border"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="5"
+                        SnapsToDevicePixels="True">
+                            <ScrollViewer
+                            x:Name="PART_ContentHost"
+                            Focusable="false"
+                            HorizontalScrollBarVisibility="Hidden"
+                            VerticalScrollBarVisibility="Hidden" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter TargetName="border" Property="Opacity" Value="0.56" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter TargetName="border" Property="BorderBrush" Value="#FF7EB4EA" />
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="true">
+                                <Setter TargetName="border" Property="BorderBrush" Value="Green" />
+                                <Setter TargetName="border" Property="BorderThickness" Value="5" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
+        </Grid.RowDefinitions>
+        <TextBlock x:Name="Header" Foreground="Green" FontSize="36" FontWeight="Bold" HorizontalAlignment="Center">NONE</TextBlock>
+        <TextBox x:Name="Input" Grid.Row="1" Margin="5" Style="{DynamicResource Input}" TextWrapping="Wrap" KeyDown="Input_KeyDown"></TextBox>
+        <Button Grid.Row="2" Margin="5" IsCancel="True">Отмена</Button>
+    </Grid>
+</Window>
