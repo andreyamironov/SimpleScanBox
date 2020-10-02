@@ -1,0 +1,214 @@
+﻿<RibbonWindow x:Class="SimpleScanBox.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SimpleScanBox"
+        xmlns:localModel="clr-namespace:SimpleScanBox.ViewModel"
+        xmlns:localConverter="clr-namespace:SimpleScanBox.Converters"
+        mc:Ignorable="d"
+        Title="Simple Scan" Height="800" Width="1024"
+        Loaded="Window_Loaded" Icon="Icons/SsCc.ico" WindowState="Maximized" WindowStartupLocation="CenterScreen">
+    <RibbonWindow.Resources>
+        <localModel:MainModel x:Key="model"></localModel:MainModel>
+        <Style x:Key="Input" TargetType="TextBox">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TextBox}">
+                        <Border
+                        x:Name="border"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="5"
+                        SnapsToDevicePixels="True">
+                            <ScrollViewer
+                            x:Name="PART_ContentHost"
+                            Focusable="false"
+                            HorizontalScrollBarVisibility="Hidden"
+                            VerticalScrollBarVisibility="Hidden" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter TargetName="border" Property="Opacity" Value="0.56" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter TargetName="border" Property="BorderBrush" Value="#FF7EB4EA" />
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="true">
+                                <Setter TargetName="border" Property="BorderBrush" Value="Green" />
+                                <Setter TargetName="border" Property="BorderThickness" Value="5" />
+                                <Setter Property="Background" Value="LightGreen" />
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="False">
+                                <Setter TargetName="border" Property="BorderBrush" Value="Red" />
+                                <Setter TargetName="border" Property="BorderThickness" Value="20" />
+                                <Setter Property="Background" Value="Orange" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </RibbonWindow.Resources>
+    <Grid x:Name="mainGrid" DataContext="{StaticResource model}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="45"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Ribbon x:Name="RibbonWin"  SelectedIndex="0">
+            <RibbonTab Header="Сканирование">
+                <RibbonGroup Header="Файлы">
+                    <RibbonButton x:Name="btnDownloadCurrentFile" Label="Загрузить текущий файл" Click="btnDownloadCurrentFile_Click" LargeImageSource="Icons\Download.ico"></RibbonButton>
+                    <RibbonButton x:Name="btnScanInNewFile" Label="Сканирование в новый файл" Click="btnScanInNewFile_Click"  LargeImageSource="Icons\Add.ico"></RibbonButton>
+                    <RibbonButton x:Name="btnOpenCurrentFile" Label="Просмотр текущего файла" Click="btnOpenCurrentFile_Click"  LargeImageSource="Icons\charT.ico"></RibbonButton>
+                    <RibbonButton x:Name="btnOpenCurrentFileEx" Label="Список в EXCEL" Click="btnOpenCurrentFileEx_Click"  LargeImageSource="Icons\charX.ico"></RibbonButton>
+                </RibbonGroup>
+                <RibbonGroup Header="Задать упаковку" ToolTip="Задать новую упаковку">
+                    <RibbonButton x:Name="btnTypeScanPallet" Label="Паллет" LargeImageSource="Icons\Pallet.ico" Click="btnTypeScanPallet_Click"></RibbonButton>
+                    <RibbonButton x:Name="btnTypeScanCarton" Label="Короб" LargeImageSource="Icons\Carton.ico" Click="btnTypeScanCarton_Click"></RibbonButton>
+                </RibbonGroup>
+                <RibbonGroup Header="Текущая упаковка">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock FontWeight="Bold" FontSize="16">Паллет:</TextBlock>
+                        <TextBlock Grid.Row="1" FontStyle="Italic" FontSize="16">Короб:</TextBlock>
+
+                        <TextBox Grid.Row="0" Grid.Column="1" FontSize="16" Width="480" Height="30" Margin="3" IsReadOnly="True" Background="AntiqueWhite" FontWeight="Black" Text="{Binding Pallet}"></TextBox>
+                        <TextBox Grid.Row="1" Grid.Column="1" FontSize="16" Width="480" Height="30" Margin="3" IsReadOnly="True" Background="WhiteSmoke" FontWeight="Black" FontStyle="Italic" Text="{Binding Carton}"></TextBox>
+                    </Grid>
+                </RibbonGroup>
+                <RibbonGroup Header="Строки">
+                    <RibbonButton x:Name="btnDeleteSelectedRow" Label="Удалить строку" LargeImageSource="Icons\Del.ico" Click="btnDeleteSelectedRow_Click"></RibbonButton>
+                </RibbonGroup>
+            </RibbonTab>
+            <RibbonTab Header="Настройки">
+                <RibbonGroup Header="Ограничения">
+                    <RibbonTextBox x:Name="txtMinimumLenghtSsCc" Label="Минимум символов" TextBoxWidth="222" Text="{Binding MinimumLenghtSsCc,Mode=OneWay}" KeyDown="txtMinimumLenghtSsCc_KeyDown"></RibbonTextBox>
+                    <RibbonTextBox x:Name="txtRegexFilter" Label="Недопустимые символы" TextBoxWidth="200" Text="{Binding RegexFindErrorChars,Mode=OneWay}" KeyDown="txtRegexFilter_KeyDown"></RibbonTextBox>
+                    <RibbonButton x:Name="btnConstraintsReset" Label="Задать по умолчанию" Click="btnConstraintsReset_Click"></RibbonButton>
+                </RibbonGroup>
+                <RibbonGroup Header="Файлы">
+                    <RibbonButton x:Name="btnCurrentFileDirectory" Label="Каталог с текущим файлом" SmallImageSource="Icons\FileCurrent.ico" Click="btnCurrentFileDirectory_Click"></RibbonButton>
+                    <RibbonButton x:Name="btnArchiveFileDirectory" Label="Каталог с архивными файлами" SmallImageSource="Icons\FileArchive.ico" Click="btnArchiveFileDirectory_Click"></RibbonButton>
+                    <RibbonButton x:Name="btnTempFileDirectory" Label="Каталог с временными файлами" SmallImageSource="Icons\FileTemp.ico" Click="btnTempFileDirectory_Click"></RibbonButton>
+                </RibbonGroup>
+                <RibbonGroup Header="Помощь">
+                    <RibbonButton x:Name="btnManual" Label="Инструкция" LargeImageSource="Icons\Manual.ico" Click="btnManual_Click"></RibbonButton>
+                </RibbonGroup>
+            </RibbonTab>
+        </Ribbon>
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="200"></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Border x:Name="brdInput" BorderBrush="Gray"  BorderThickness="3" CornerRadius="3" Margin="3" Grid.Row="0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25"></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <TextBlock FontSize="16">Поле ввода данных:</TextBlock>
+                    <TextBox x:Name="txtInput" Text="{Binding Input,Mode=OneWay}" KeyDown="txtInput_KeyDown" Grid.Row="1" Margin="5" FontSize="25" Style="{DynamicResource Input}"></TextBox>
+                </Grid>
+            </Border>
+            <Border x:Name="brdTextLast" BorderBrush="AliceBlue" BorderThickness="3" CornerRadius="3" Margin="3" Grid.Row="0" Grid.Column="1">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25"></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <TextBlock FontSize="16">Последнее отсканированное:</TextBlock>
+                    <TextBox Text="{Binding LastInput,Mode=OneWay}" Grid.Row="1" Margin="5" Background="LightYellow" FontSize="25" TextWrapping="Wrap" IsReadOnly="True"></TextBox>
+                </Grid>
+            </Border>
+            <Border x:Name="brdList" BorderBrush="AliceBlue" BorderThickness="3" CornerRadius="3" Margin="3" Grid.Row="1" Grid.ColumnSpan="2"
+                        VirtualizingStackPanel.IsVirtualizing="True" 
+                        VirtualizingStackPanel.VirtualizationMode="Recycling">
+                <ListView FontSize="16" ItemsSource="{Binding ListSsCc,UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedRow,UpdateSourceTrigger=PropertyChanged}" SelectionChanged="ListView_SelectionChanged">
+                    <ListView.Resources>
+                        <localConverter:OrdinalConverter x:Key="OrdinalConverter" />
+                        <DataTemplate x:Key="OrdinalColumnDataTemplate">
+                            <TextBlock Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListViewItem},
+                                Converter={StaticResource ResourceKey=OrdinalConverter}}" HorizontalAlignment="Right" />
+                        </DataTemplate>
+                    </ListView.Resources>
+                    <ListView.View>
+                        <GridView>
+                            <GridView.Columns>
+                                <GridViewColumn Header="#" CellTemplate="{StaticResource ResourceKey=OrdinalColumnDataTemplate}" Width="40" />
+                                <GridViewColumn Header="№" Width="40" DisplayMemberBinding="{Binding Id}"></GridViewColumn>
+                                
+                                <GridViewColumn>
+                                    <GridViewColumn.HeaderTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="18"></RowDefinition>
+                                                    <RowDefinition Height="18"></RowDefinition>
+                                                </Grid.RowDefinitions>
+                                                <TextBlock Grid.Row="0" Text="Паллет" FontWeight="Bold" FontSize="12"></TextBlock>
+                                                <TextBlock Grid.Row="1" Foreground="DarkGray" FontStyle="Italic" Text="Короб" FontSize="12"></TextBlock>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </GridViewColumn.HeaderTemplate>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition></RowDefinition>
+                                                    <RowDefinition></RowDefinition>
+                                                </Grid.RowDefinitions>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="50"></ColumnDefinition>
+                                                    <ColumnDefinition></ColumnDefinition>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding Pallet}" FontWeight="Bold"></TextBlock>
+                                                <TextBlock Grid.Row="1" Grid.Column="1" Margin="10,0,0,0" Text="{Binding Carton}" Foreground="DarkGray" FontStyle="Italic"></TextBlock>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+
+                                <GridViewColumn Width="600">
+                                    <GridViewColumn.HeaderTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="Штрихкод" TextWrapping="Wrap"></TextBlock>
+                                        </DataTemplate>
+                                    </GridViewColumn.HeaderTemplate>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding SsCc}" HorizontalAlignment="Left" Height="75" TextWrapping="Wrap" Foreground="DarkGreen" FontWeight="Bold"></TextBlock>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="Дата" Width="200" DisplayMemberBinding="{Binding Date,StringFormat=dd.MM.yyyy HH:mm:ss:fff}"></GridViewColumn>
+                            </GridView.Columns>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </Border>
+        </Grid>
+        <StatusBar Grid.Row="2" FontWeight="Black" FontSize="16">
+            <StatusBarItem>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Margin="5,0,0,0">Количество строк: </TextBlock>
+                    <TextBlock Text="{Binding Count}" Margin="10,0,0,0"></TextBlock>
+                </StackPanel>
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+</RibbonWindow>
