@@ -185,8 +185,6 @@ namespace SimpleScanBox
 
         private void btnManual_Click(object sender, RoutedEventArgs e)
         {
-
-
             Manual manual = new Manual();
             manual.Show();
         }

@@ -31,9 +31,15 @@ namespace SimpleScanBox.ViewModel
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             var uri = new Uri("pack://application:,,,/SimpleScan_Manual.xps");
-            var stream = Application.GetResourceStream(uri).Stream;
-            Package package = Package.Open(stream);
-            PackageStore.AddPackage(uri, package);
+
+            Package package = PackageStore.GetPackage(uri);
+            if(package == null)
+            {
+                var stream = Application.GetResourceStream(uri).Stream;
+                package = Package.Open(stream);
+                PackageStore.AddPackage(uri, package);
+            }
+            
             var xpsDoc = new XpsDocument(package, CompressionOption.Maximum, uri.AbsoluteUri);
             var fixedDocumentSequence = xpsDoc.GetFixedDocumentSequence();
             doc.Document = fixedDocumentSequence; 

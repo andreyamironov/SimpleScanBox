@@ -106,7 +106,7 @@
     <Compile Include="Converters\OrdinalConverter.cs" />
     <Compile Include="ViewModel\InputBoxViewModel.cs" />
     <Compile Include="ViewModel\MainModel.cs" />
-    <Compile Include="ViewModel\Manual.xaml.cs">
+    <Compile Include="View\Manual.xaml.cs">
       <DependentUpon>Manual.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\InputBox.xaml.cs">
@@ -128,7 +128,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ViewModel\Manual.xaml">
+    <Page Include="View\Manual.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
